@@ -1,4 +1,7 @@
 package clangame.service;
 
-public class ClanService {
+import clangame.model.Clan;
+
+public interface ClanService {
+    Clan getClan(Long clanId);
 }
