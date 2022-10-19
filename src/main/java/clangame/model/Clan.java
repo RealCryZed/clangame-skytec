@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Clan {
-    private Long id;
+    private Integer id;
     private String name;
     private int gold;
 }

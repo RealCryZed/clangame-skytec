@@ -9,11 +9,11 @@ public class JdbcConnection {
     private static BasicDataSource ds = new BasicDataSource();
 
     static {
-        ds.setUrl("jdbc:h2:mem:clangame;DB_CLOSE_DELAY=-1");
-        ds.setUsername("realcryzed");
-        ds.setPassword("password");
+        ds.setUrl("jdbc:postgresql://surus.db.elephantsql.com/pzktcwmi");
+        ds.setUsername("pzktcwmi");
+        ds.setPassword("SEoRn8r8G6bSmJDI47cVxoeKUZgjenNB");
         ds.setMinIdle(1);
-        ds.setMaxIdle(10);
+        ds.setMaxIdle(100);
         ds.setMaxOpenPreparedStatements(100);
     }
 

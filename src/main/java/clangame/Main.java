@@ -1,6 +1,7 @@
 package clangame;
 
 import clangame.config.JdbcConnection;
+import clangame.service.ClanService;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
 import java.io.BufferedReader;
@@ -14,28 +15,41 @@ import java.sql.Statement;
 
 public class Main {
     public static void main(String[] args) {
+        initializeTable();
+        System.out.println(ClanService.getClan(1));
+    }
+
+    public static void initializeTable() {
+        Connection con = null;
         try {
-            Connection con = JdbcConnection.getConnection();
+            con = JdbcConnection.getConnection();
 
-            ScriptRunner sr = new ScriptRunner(con);
-            Reader reader = new BufferedReader(new FileReader("src/main/java/resources/data.sql"));
-            sr.runScript(reader);
+            String initializationQuery = "drop table if exists clans;" +
+                    "create table clans (\n" +
+                    "    id int PRIMARY KEY,\n" +
+                    "    name VARCHAR(50) not null unique,\n" +
+                    "    gold int not null\n" +
+                    ");" +
+                    "insert into clans values(1, 'Clan1', 50)";
 
-            String query = "insert into clans values(1, 'Clan1', 50)";
-            String query2 = "SELECT id, name, gold FROM clans";
+            String testQuery = "SELECT id, name, gold FROM clans";
 
             Statement statement = con.createStatement();
-            statement.execute(query);
+            statement.execute(initializationQuery);
 
-            ResultSet rs = statement.executeQuery(query2);
+            ResultSet rs = statement.executeQuery(testQuery);
 
             while (rs.next()) {
-                System.out.println(rs.getLong("id") + ", " + rs.getString("name") + ", " + rs.getInt("gold"));
+                System.out.println(rs.getInt("id") + ", " + rs.getString("name") + ", " + rs.getInt("gold"));
             }
-
-            con.close();
-        } catch (SQLException | FileNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
