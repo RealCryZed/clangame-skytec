@@ -9,13 +9,14 @@ public class ClanService {
     public static Clan getClan(Integer clanId) {
         Clan clan = new Clan();
         Connection con = null;
+        PreparedStatement ps = null;
         try {
             con = JdbcConnection.getConnection();
 
             String query = "SELECT id, name, gold FROM clans WHERE id = " + clanId;
 
-            PreparedStatement statement = con.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();
+            ps = con.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 clan.setId(rs.getInt("id"));
@@ -26,12 +27,40 @@ public class ClanService {
             e.printStackTrace();
         } finally {
             try {
-                con.close();
+                if (con != null && ps != null) {
+                    con.close();
+                    ps.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
         return clan;
+    }
+
+    public static void updateGoldValue(Clan clan, int depositGold) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = JdbcConnection.getConnection();
+            int actualGold = clan.getGold();
+
+            ps = con.prepareStatement("UPDATE clans set gold = ? WHERE id = ?");
+            ps.setInt(1, actualGold + depositGold);
+            ps.setInt(2, clan.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (con != null && ps != null) {
+                    con.close();
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package clangame;
 
 import clangame.config.JdbcConnection;
+import clangame.model.Clan;
 import clangame.service.ClanService;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -16,11 +17,19 @@ import java.sql.Statement;
 public class Main {
     public static void main(String[] args) {
         initializeTable();
-        System.out.println(ClanService.getClan(1));
+
+        Clan clan = ClanService.getClan(1);
+        System.out.println(clan);
+
+        ClanService.updateGoldValue(clan, 999);
+
+        clan = ClanService.getClan(1);
+        System.out.println(clan);
     }
 
     public static void initializeTable() {
         Connection con = null;
+        Statement statement = null;
         try {
             con = JdbcConnection.getConnection();
 
@@ -34,7 +43,7 @@ public class Main {
 
             String testQuery = "SELECT id, name, gold FROM clans";
 
-            Statement statement = con.createStatement();
+            statement = con.createStatement();
             statement.execute(initializationQuery);
 
             ResultSet rs = statement.executeQuery(testQuery);
@@ -46,7 +55,10 @@ public class Main {
             e.printStackTrace();
         } finally {
             try {
-                con.close();
+                if (con != null && statement != null) {
+                    con.close();
+                    statement.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
