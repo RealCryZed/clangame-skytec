@@ -3,28 +3,38 @@ package clangame;
 import clangame.config.JdbcConnection;
 import clangame.model.Clan;
 import clangame.service.ClanService;
-import org.apache.ibatis.jdbc.ScriptRunner;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         initializeTable();
 
-        Clan clan = ClanService.getClan(1);
-        System.out.println(clan);
+        Thread thread1 = new ClanService(1, 550);
+        Thread thread2 = new ClanService(2, 1000);
+        Thread thread3 = new ClanService(1, 60);
+        Thread thread4 = new ClanService(3, 480);
+        Thread thread5 = new ClanService(3, 20);
 
-        ClanService.updateGoldValue(clan, 999);
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread4.start();
+        thread5.start();
 
-        clan = ClanService.getClan(1);
-        System.out.println(clan);
+        thread1.join();
+        thread2.join();
+        thread3.join();
+        thread4.join();
+        thread5.join();
+
+//        Clan clan = ClanService.getClan(1);
+//        System.out.println(clan);
+//        ClanService.updateGoldValue(clan, 999);
+//        clan = ClanService.getClan(1);
+//        System.out.println(clan);
     }
 
     public static void initializeTable() {
@@ -39,7 +49,9 @@ public class Main {
                     "    name VARCHAR(50) not null unique,\n" +
                     "    gold int not null\n" +
                     ");" +
-                    "insert into clans values(1, 'Clan1', 50)";
+                    "insert into clans values(1, 'Clan1', 0);" +
+                    "insert into clans values(2, 'Clan2', 0);" +
+                    "insert into clans values(3, 'Clan3', 0);";
 
             String testQuery = "SELECT id, name, gold FROM clans";
 

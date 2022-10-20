@@ -3,10 +3,32 @@ package clangame.service;
 import clangame.config.JdbcConnection;
 import clangame.model.Clan;
 import java.sql.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class ClanService {
+public class ClanService extends Thread {
 
-    public static Clan getClan(Integer clanId) {
+    private Integer clanId;
+    private Integer depositGold;
+    private static Lock lock = new ReentrantLock();
+
+    public ClanService(Integer clanId, Integer depositGold) {
+        this.clanId = clanId;
+        this.depositGold = depositGold;
+    }
+
+    @Override
+    public void run() {
+        lock.lock();
+        try {
+            Clan clan = getClan(clanId);
+            updateGoldValue(clan, depositGold);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private Clan getClan(Integer clanId) {
         Clan clan = new Clan();
         Connection con = null;
         PreparedStatement ps = null;
@@ -39,7 +61,7 @@ public class ClanService {
         return clan;
     }
 
-    public static void updateGoldValue(Clan clan, int depositGold) {
+    private void updateGoldValue(Clan clan, int depositGold) {
         Connection con = null;
         PreparedStatement ps = null;
         try {
