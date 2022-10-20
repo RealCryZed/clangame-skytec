@@ -4,12 +4,19 @@ import clangame.model.Clan;
 
 public class TaskService {
 
-    public void completeTask(Integer clanId, Integer taskId) {
+    public void completeTask(Integer taskId, Integer clanId, Integer reward) {
+        // if (true) for show purposes
+        if(true) {
+            Clan clan = ClanService.getClan(clanId);
+            Thread clanService = new ClanGoldAdder(clan, reward);
+            clanService.start();
+//            try {
+//                clanService.join(5000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
-        // if (success)
-
-//        Clan clan = ClanService.getClan(clanId);
-        // clan.[gold] += gold;
-        // как-то сохранить изменения
+            GoldTrackerService.saveTaskTransaction(taskId, clan, reward);
+        }
     }
 }
