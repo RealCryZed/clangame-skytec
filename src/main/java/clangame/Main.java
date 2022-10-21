@@ -84,9 +84,11 @@ public class Main {
         try {
             for (int i = 1; i <= 20; i++) {
                 Random random = new Random();
+
                 int randomService = random.nextInt(2);
                 Integer randomClanId = random.nextInt(3) + 1;
                 Integer randomGoldValue = random.nextInt(1000 - 10) + 10;
+
                 Thread thread;
                 if (randomService == 0) {
                     thread = new TaskService(i, randomClanId, randomGoldValue);

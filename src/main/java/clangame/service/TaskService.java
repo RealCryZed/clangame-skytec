@@ -19,6 +19,9 @@ public class TaskService extends Thread {
         this.reward = reward;
     }
 
+    // When started it gets clan from database using given id and then
+    // calls method ClanGoldAdder.updateGoldValue() to add gold to the wallet.
+    // Then it calls saveDepositTransaction() to save the transaction
     @Override
     public void run() {
         Clan clan = ClanService.getClan(clanId);
@@ -26,6 +29,7 @@ public class TaskService extends Thread {
         saveTaskTransaction(taskId, clan, reward);
     }
 
+    // Saves the completed transaction in the database 'gold_from_task'
     private void saveTaskTransaction(Integer taskId, Clan clan, Integer reward) {
         Connection con = null;
         PreparedStatement ps = null;

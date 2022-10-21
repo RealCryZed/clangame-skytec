@@ -6,6 +6,8 @@ import java.sql.*;
 
 public class ClanGoldAdder {
 
+    // Takes Clan object and amount of gold that needs to be added to the clan's wallet and
+    // saves it in the database
     public static void updateGoldValue(Clan clan, int depositGold) {
         Connection con = null;
         PreparedStatement ps = null;

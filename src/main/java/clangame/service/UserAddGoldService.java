@@ -19,6 +19,9 @@ public class UserAddGoldService extends Thread{
         this.gold = gold;
     }
 
+    // When started it gets clan from database using given id and then
+    // calls method ClanGoldAdder.updateGoldValue() to add gold to the wallet.
+    // Then it calls saveDepositTransaction() to save the transaction
     @Override
     public void run() {
         Clan clan = ClanService.getClan(clanId);
@@ -26,6 +29,7 @@ public class UserAddGoldService extends Thread{
         saveDepositTransaction(userId, clan, gold);
     }
 
+    // Saves the completed transaction in the database 'gold_from_donation'
     private void saveDepositTransaction(Integer userId, Clan clan, Integer gold) {
         Connection con = null;
         PreparedStatement ps = null;
