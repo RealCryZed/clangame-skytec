@@ -6,15 +6,12 @@ import clangame.model.Clan;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class UserAddGoldService extends Thread{
 
     private Integer userId;
     private Integer clanId;
     private Integer gold;
-    private static Lock lock = new ReentrantLock();
 
     public UserAddGoldService(Integer userId, Integer clanId, Integer gold) {
         this.userId = userId;
@@ -24,16 +21,9 @@ public class UserAddGoldService extends Thread{
 
     @Override
     public void run() {
-        lock.lock();
-        try {
-            System.err.println("Thread started... Working with: " + Thread.currentThread().getName());
-            Clan clan = ClanService.getClan(clanId);
-            ClanGoldAdder.updateGoldValue(clan, gold);
-            saveDepositTransaction(userId, clan, gold);
-            System.err.println("Gold is saved successfully!");
-        } finally {
-            lock.unlock();
-        }
+        Clan clan = ClanService.getClan(clanId);
+        ClanGoldAdder.updateGoldValue(clan, gold);
+        saveDepositTransaction(userId, clan, gold);
     }
 
     private void saveDepositTransaction(Integer userId, Clan clan, Integer gold) {
@@ -52,7 +42,8 @@ public class UserAddGoldService extends Thread{
             ps.setInt(4, clan.getGold() + gold);
             ps.setInt(5, gold);
             ps.execute();
-            System.out.println("Deposit transaction: " + userId + ", " + clan.getGold() + ", " + gold);
+            System.out.println("Deposit transaction: userId=" + userId + ", clanId=" + clan.getId() +
+                    ", initialGold=" + clan.getGold() + ", addedGold=" + gold + "\n");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

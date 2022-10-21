@@ -6,15 +6,12 @@ import clangame.model.Clan;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class TaskService extends Thread {
 
     private Integer taskId;
     private Integer clanId;
     private Integer reward;
-    private static Lock lock = new ReentrantLock();
 
     public TaskService(Integer taskId, Integer clanId, Integer reward) {
         this.taskId = taskId;
@@ -24,16 +21,9 @@ public class TaskService extends Thread {
 
     @Override
     public void run() {
-        lock.lock();
-        try {
-            System.err.println("Thread started... Working with: " + Thread.currentThread().getName());
-            Clan clan = ClanService.getClan(clanId);
-            ClanGoldAdder.updateGoldValue(clan, reward);
-            saveTaskTransaction(taskId, clan, reward);
-            System.err.println("Gold is saved successfully!");
-        } finally {
-            lock.unlock();
-        }
+        Clan clan = ClanService.getClan(clanId);
+        ClanGoldAdder.updateGoldValue(clan, reward);
+        saveTaskTransaction(taskId, clan, reward);
     }
 
     private void saveTaskTransaction(Integer taskId, Clan clan, Integer reward) {
@@ -53,7 +43,8 @@ public class TaskService extends Thread {
             ps.setInt(5, reward);
             ps.execute();
 
-            System.out.println("Task transaction: " + taskId + ", " + clan.getGold() + ", " + reward);
+            System.out.println("Task transaction: taskId=" + taskId + ", clanId=" + clan.getId() +
+                    ", initialGold=" + clan.getGold() + ", addedGold=" + reward + "\n");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
