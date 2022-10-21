@@ -3,32 +3,10 @@ package clangame.service;
 import clangame.config.JdbcConnection;
 import clangame.model.Clan;
 import java.sql.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-public class ClanGoldAdder extends Thread {
+public class ClanGoldAdder {
 
-    private Clan clan;
-    private Integer depositGold;
-    private static Lock lock = new ReentrantLock();
-
-    public ClanGoldAdder(Clan clan, Integer depositGold) {
-        this.clan = clan;
-        this.depositGold = depositGold;
-    }
-
-    @Override
-    public void run() {
-        lock.lock();
-        try {
-            System.err.println("Thread started... Working with: " + Thread.currentThread().getName());
-            updateGoldValue(depositGold);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    private void updateGoldValue(int depositGold) {
+    public static void updateGoldValue(Clan clan, int depositGold) {
         Connection con = null;
         PreparedStatement ps = null;
         try {

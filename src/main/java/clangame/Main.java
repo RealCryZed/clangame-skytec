@@ -1,51 +1,44 @@
 package clangame;
 
 import clangame.config.JdbcConnection;
-import clangame.service.TaskService;
-import clangame.service.UserAddGoldService;
+import clangame.service.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 
     public static void main(String[] args) {
         initializeTables();
 
-        UserAddGoldService userAddGoldService = new UserAddGoldService();
-        TaskService taskService = new TaskService();
+        ExecutorService depositExecService = Executors.newSingleThreadExecutor();
+        ExecutorService taskExecService = Executors.newSingleThreadExecutor();
+        try {
+            for (int i = 1; i < 20; i++) {
+                Random random = new Random();
+                Integer randomClanId = random.nextInt(3) + 1;
+                Integer randomGoldValue = random.nextInt(1000 - 10) + 10;
+                Thread thread = new UserAddGoldService(i, randomClanId, randomGoldValue);
+                depositExecService.submit(thread);
+                System.out.println("depositExecService submitted");
+            }
 
-        taskService.completeTask(1, 2, 30);
-        System.err.println("adding gold");
-        taskService.completeTask(2, 3, 50);
-        System.err.println("adding gold");
-        userAddGoldService.addGoldToClan(1, 1, 2000);
-        System.err.println("adding gold");
-        taskService.completeTask(3, 1, 50);
-        System.err.println("adding gold");
-        taskService.completeTask(4, 1, 20);
-        System.err.println("adding gold");
-        userAddGoldService.addGoldToClan(2, 2, 500);
-        System.err.println("adding gold");
-        taskService.completeTask(5, 3, 70);
-        System.err.println("adding gold");
-        taskService.completeTask(6, 3, 100);
-        System.err.println("adding gold");
-        userAddGoldService.addGoldToClan(3, 3, 100);
-        System.err.println("adding gold");
-        taskService.completeTask(7, 2, 10);
-        System.err.println("adding gold");
-        userAddGoldService.addGoldToClan(4, 1, 100);
-        System.err.println("adding gold");
-        taskService.completeTask(8, 2, 30);
-        System.err.println("adding gold");
-        taskService.completeTask(9, 1, 70);
-        System.err.println("adding gold");
-        userAddGoldService.addGoldToClan(5, 3, 400);
-        System.err.println("adding gold");
-        taskService.completeTask(10, 1, 20);
-        System.err.println("adding gold");
+            for (int i = 1; i < 20; i++) {
+                Random random = new Random();
+                Integer randomClanId = random.nextInt(3 - 1);
+                Integer randomGoldValue = random.nextInt(1000 - 10) + 10;
+                Thread thread = new TaskService(i, randomClanId, randomGoldValue);
+                taskExecService.submit(thread);
+                System.out.println("taskExecService submitted");
+            }
+        } finally {
+            depositExecService.shutdown();
+            taskExecService.shutdown();
+        }
     }
 
     public static void initializeTables() {
