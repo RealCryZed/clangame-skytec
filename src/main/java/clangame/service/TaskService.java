@@ -25,7 +25,7 @@ public class TaskService extends Thread {
     @Override
     public void run() {
         Clan clan = ClanService.getClan(clanId);
-        ClanGoldAdder.updateGoldValue(clan, reward);
+        ClanGoldService.updateGoldValue(clan, reward);
         saveTaskTransaction(taskId, clan, reward);
     }
 
@@ -53,10 +53,10 @@ public class TaskService extends Thread {
             e.printStackTrace();
         } finally {
             try {
-                if (con != null && ps != null) {
-                    con.close();
+                if(ps != null)
                     ps.close();
-                }
+                if(con != null)
+                    con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

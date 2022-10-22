@@ -33,10 +33,10 @@ public class ClanService {
             e.printStackTrace();
         } finally {
             try {
-                if (con != null && ps != null) {
-                    con.close();
+                if(ps != null)
                     ps.close();
-                }
+                if(con != null)
+                    con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

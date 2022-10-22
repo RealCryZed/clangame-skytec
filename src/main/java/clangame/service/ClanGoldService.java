@@ -4,7 +4,7 @@ import clangame.config.JdbcConnection;
 import clangame.model.Clan;
 import java.sql.*;
 
-public class ClanGoldAdder {
+public class ClanGoldService {
 
     // Takes Clan object and amount of gold that needs to be added to the clan's wallet and
     // saves it in the database
@@ -23,10 +23,10 @@ public class ClanGoldAdder {
             e.printStackTrace();
         } finally {
             try {
-                if (con != null && ps != null) {
-                    con.close();
+                if(ps != null)
                     ps.close();
-                }
+                if(con != null)
+                    con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

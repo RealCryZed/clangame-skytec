@@ -25,7 +25,7 @@ public class UserAddGoldService extends Thread{
     @Override
     public void run() {
         Clan clan = ClanService.getClan(clanId);
-        ClanGoldAdder.updateGoldValue(clan, gold);
+        ClanGoldService.updateGoldValue(clan, gold);
         saveDepositTransaction(userId, clan, gold);
     }
 
@@ -52,10 +52,10 @@ public class UserAddGoldService extends Thread{
             e.printStackTrace();
         } finally {
             try {
-                if (con != null && ps != null) {
-                    con.close();
+                if(ps != null)
                     ps.close();
-                }
+                if(con != null)
+                    con.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

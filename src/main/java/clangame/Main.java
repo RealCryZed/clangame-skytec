@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         initializeTables();
         simulateGoldAddition();
+        getDbInfo();
     }
 
     // Initialization of tables in PostgreSQL on external server
@@ -92,18 +94,42 @@ public class Main {
                 Thread thread;
                 if (randomService == 0) {
                     thread = new TaskService(i, randomClanId, randomGoldValue);
-                    thread.setName("Task-Thread");
                     taskExecService.submit(thread);
                 } else {
                     thread = new UserAddGoldService(i, randomClanId, randomGoldValue);
-                    thread.setName("Deposit-Thread");
                     depositExecService.submit(thread);
                 }
-                System.out.println(thread.getName() + " submitted");
             }
         } finally {
             depositExecService.shutdown();
             taskExecService.shutdown();
+        }
+    }
+
+    private static void getDbInfo() {
+        Scanner scanner = new Scanner(System.in);
+
+        while(true) {
+            System.out.println("Type 'tasks' to show all transactions made by completing tasks.");
+            System.out.println("Type 'deposits' to show all transactions made by donations.");
+            System.out.println("Type 'clans' to show all clans.");
+            System.out.println();
+
+            String userValue = scanner.nextLine();
+            switch (userValue.toLowerCase()) {
+                case "tasks":
+                    DBService.getAllTaskTransactions();
+                    break;
+                case "deposits":
+                    DBService.getAllDepositTransactions();
+                    break;
+                case "clans":
+                    DBService.getAllClans();
+                    break;
+                default:
+                    System.out.println("Try again!\n");
+                    break;
+            }
         }
     }
 }
