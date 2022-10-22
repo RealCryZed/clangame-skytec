@@ -96,7 +96,7 @@ public class DBService {
         }
     }
 
-    public static void getAllClans() {
+    private static void getAllClans() {
         Connection con = null;
         Statement st = null;
         ResultSet rs = null;
@@ -127,7 +127,7 @@ public class DBService {
         }
     }
 
-    public static void getAllTaskTransactions() {
+    private static void getAllTaskTransactions() {
         Connection con = null;
         Statement st = null;
         ResultSet rs = null;
@@ -159,7 +159,7 @@ public class DBService {
         }
     }
 
-    public static void getAllDepositTransactions() {
+    private static void getAllDepositTransactions() {
         Connection con = null;
         Statement st = null;
         ResultSet rs = null;
