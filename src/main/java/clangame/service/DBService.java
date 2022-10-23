@@ -36,7 +36,8 @@ public class DBService {
                             "    clan_id int not null,\n" +
                             "    initial_gold_value int not null,\n" +
                             "    final_gold_value int not null,\n" +
-                            "    added_gold int not null);";
+                            "    added_gold int not null, \n" +
+                            "    date_time VARCHAR(100) not null);";
 
             String goldDonationInitializationQuery =
                     "drop table if exists gold_from_donation;" +
@@ -46,7 +47,8 @@ public class DBService {
                             "    clan_id int not null,\n" +
                             "    initial_gold_value int not null,\n" +
                             "    final_gold_value int not null,\n" +
-                            "    added_gold int not null);";
+                            "    added_gold int not null, \n" +
+                            "    date_time VARCHAR(100) not null);";
 
             statement = con.createStatement();
 

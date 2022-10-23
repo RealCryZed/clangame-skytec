@@ -6,6 +6,9 @@ import clangame.model.Clan;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 public class TaskService extends Thread {
 
@@ -36,15 +39,19 @@ public class TaskService extends Thread {
         try {
             con = JdbcConnection.getConnection();
 
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm:ss").withZone(ZoneId.of("UTC"));
+            String dateTime = LocalDateTime.now().format(dateTimeFormatter);
+
             ps = con.prepareStatement(
                     "insert into gold_from_task" +
-                            "(task_id, clan_id, initial_gold_value, final_gold_value, added_gold)" +
-                            " values(?, ?, ?, ?, ?);");
+                            "(task_id, clan_id, initial_gold_value, final_gold_value, added_gold, date_time)" +
+                            " values(?, ?, ?, ?, ?, ?);");
             ps.setInt(1, taskId);
             ps.setInt(2, clan.getId());
             ps.setInt(3, clan.getGold());
             ps.setInt(4, clan.getGold() + reward);
             ps.setInt(5, reward);
+            ps.setString(6, dateTime);
             ps.execute();
 
             System.out.println("Task transaction: taskId=" + taskId + ", clanId=" + clan.getId() +
