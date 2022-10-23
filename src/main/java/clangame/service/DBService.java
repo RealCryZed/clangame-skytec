@@ -142,7 +142,8 @@ public class DBService {
             while (rs.next()) {
                 System.out.println("transactionId: " + rs.getInt(1) + ", taskId: "
                         + rs.getInt(2) + ", clanId: " + rs.getInt(3) + ", initialGold: "
-                        + rs.getInt(4) + ", finalGold: " + rs.getInt(5) + ", addedGold: " + rs.getInt(6));
+                        + rs.getInt(4) + ", finalGold: " + rs.getInt(5) + ", addedGold: "
+                        + rs.getInt(6) + ", Date: '" + rs.getString(7) + "'");
             }
             System.out.println();
         } catch (SQLException e) {
@@ -174,7 +175,8 @@ public class DBService {
             while (rs.next()) {
                 System.out.println("transactionId: " + rs.getInt(1) + ", userId: "
                         + rs.getInt(2) + ", clanId: " + rs.getInt(3) + ", initialGold: "
-                        + rs.getInt(4) + ", finalGold: " + rs.getInt(5) + ", addedGold: " + rs.getInt(6));
+                        + rs.getInt(4) + ", finalGold: " + rs.getInt(5) + ", addedGold: "
+                        + rs.getInt(6) + ", Date: '" + rs.getString(7) + "'");
             }
             System.out.println();
         } catch (SQLException e) {
